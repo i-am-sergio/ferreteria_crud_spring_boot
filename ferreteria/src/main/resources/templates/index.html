@@ -1,99 +1,141 @@
 <!DOCTYPE html>
 <html
-  lang="es"
+  lang="en"
   xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="engine"
 >
   <head>
-    <meta charset="utf-8" />
-    <title>Inicio</title>
+    <meta charset="UTF-8" />
+    <title>Liste Employees</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
+      href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"
     />
-    <!-- Latest compiled and minified CSS -->
-    <!-- <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-	crossorigin="anonymous"> -->
-
-    <!-- Optional theme -->
-    <!-- <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-	integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-	crossorigin="anonymous"> -->
   </head>
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button
-            type="button"
-            class="navbar-toggle collapsed"
-            data-toggle="collapse"
-            data-target="#navbar"
-            aria-expanded="false"
-            aria-controls="navbar"
-          >
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span> <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#" th:href="@{/}"
-            >Registro y inicio de sesión</a
-          >
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li sec:authorize="isAuthenticated()">
-              <a th:href="@{/logout}">Cerrar sesión</a>
-            </li>
-          </ul>
+    <div layout:fragment="content1">
+      <div class="container mt-2">
+        <a
+          th:href="@{/showNewEmployeeForm}"
+          class="btn btn-primary btn-sm mb-3"
+        >
+          Add Employee</a
+        >
+        <div class="card">
+          <div class="card-header">Listes des Employées</div>
+          <div class="card-body">
+            <table class="table" aria-describedby="table-description">
+              <thead>
+                <tr>
+                  <th>
+                    <a
+                      th:href="@{'/page/'+${currentPage} + '?sortField=firstName&sortDir='+ ${reserveSortDir}} "
+                    >
+                      Employee First Name
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      th:href="@{'/page/'+${currentPage} + '?sortField=lastName&sortDir='+ ${reserveSortDir}} "
+                    >
+                      Employee Last Name
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      th:href="@{'/page/'+${currentPage} + '?sortField=email&sortDir='+ ${reserveSortDir}} "
+                    >
+                      Employee Email Adress
+                    </a>
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="employee:${listEmployees}">
+                  <!--list_employees-->
+                  <td th:text="${employee.firstName}">FistName</td>
+                  <td th:text="${employee.lastName}">LastName</td>
+                  <td th:text="${employee.email}">Email</td>
+                  <td>
+                    <a
+                      th:href="@{/showFormForUpdate/{id}(id=${employee.id})}"
+                      class="btn btn-primary"
+                      >Update</a
+                    >
+                    <a
+                      th:href="@{/deleteEmployee/{id}(id=${employee.id})}"
+                      class="btn btn-danger"
+                      >Delete</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!--pagination part modified in the purpose of adding sorting methods>
+
+                <div th:if="${totalPages > 1}">
+                    <div class="row col-sm-10">
+                        <div class="col-sm-2">
+                            Total rows: [[${totalItems}]]
+                        </div>
+                        <div class="col-sm-1">
+                             <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                                 <a th:if="${currentPage != i}" th:href="@{'/page/'+ ${i}}">[[${i}]]</a>
+                                 <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp; &nbsp;
+                             </span>
+                        </div>
+                        <div class="col-sm-1">
+                            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' +${currentPage+1} } ">Next</a>
+                            <span th:unless="${currentPage < totalPages}" >Next</span>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' +${totalPages}}">Last</a>
+                            <span th:unless="${currentPage < totalPages}" >Last</span>
+                        </div>
+                    </div>
+                </div-->
+            <!--fin add-->
+
+            <div th:if="${totalPages > 1}">
+              <div class="row col-sm-10">
+                <div class="col-sm-2">Total rows: [[${totalItems}]]</div>
+                <div class="col-sm-1">
+                  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                    <!--Ajout et fin de l'ajout-->
+                    <a
+                      th:if="${currentPage != i}"
+                      th:href="@{'/page/'+ ${i} + '?sortField='+${sortField}+ '&sortDir='+${sortDir} }"
+                      >[[${i}]]</a
+                    >
+                    <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;
+                    &nbsp;
+                  </span>
+                </div>
+                <div class="col-sm-1">
+                  <a
+                    th:if="${currentPage < totalPages}"
+                    th:href="@{'/page/' +${currentPage+1} + '?sortField='+${sortField}+ '&sortDir='+${sortDir} }"
+                    >Next</a
+                  >
+                  <span th:unless="${currentPage < totalPages}">Next</span>
+                </div>
+
+                <div class="col-sm-1">
+                  <a
+                    th:if="${currentPage < totalPages}"
+                    th:href="@{'/page/' +${totalPages} + '?sortField='+${sortField}+ '&sortDir='+${sortDir} }"
+                    >Last</a
+                  >
+                  <span th:unless="${currentPage < totalPages}">Last</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
-
-    <br />
-    <br />
-
-    <div class="container">
-      <h1>
-        Registro e inicio de sesión con Spring Boot + Spring Security +
-        Thymeleaf + Hibernate + MySQL y Bootstrap
-      </h1>
-      <br />
-      <h4>Bienvenido <span sec:authentication="principal.username"></span></h4>
-
-      <br />
-      <br />
-
-      <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="usuario : ${usuarios}">
-            <td th:text="${usuario.id}">ID</td>
-            <td th:text="${usuario.nombre}">ID</td>
-            <td th:text="${usuario.apellido}">ID</td>
-            <td th:text="${usuario.email}">ID</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
   </body>
 </html>
