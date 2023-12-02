@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final UserService userService;
-    private final AuthenticationProvider authProvider;
+    // private final AuthenticationProvider authProvider;
 
     @Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -47,7 +47,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authRequest -> 
                     authRequest
-                        .requestMatchers("/registro**").permitAll()
+                        .requestMatchers("/registro/**").permitAll()
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/img/**").permitAll()
