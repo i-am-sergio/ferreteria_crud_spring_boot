@@ -36,7 +36,7 @@ public class UserModel implements UserDetails  {
     private Long id;
 
     @NotEmpty
-    private String username; // email
+    private String username;
 
     @NotEmpty
     private String password;
@@ -77,4 +77,14 @@ public class UserModel implements UserDetails  {
     public boolean isEnabled() {
         return true;
     }
+
+    // Agrega este constructor a tu clase UserModel
+    public UserModel(String firstname, String lastname, String username, String password, Collection<RoleModel> roles) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
 }
